@@ -1,22 +1,38 @@
+cat > .gitignore << 'EOF'
 # IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
 
-# Maven
+# VS Code
+.vscode/
+
+# Angular
+node_modules/
+dist/
+*.tgz
+
+# Backend Maven
 target/
 *.jar
 *.war
 *.ear
 
-# OS
+# Logs
+*.log
+logs/
+
+# Sistema operativo
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Archivos de entorno (contraseñas, keys)
+.env
+*.key
+*.pem
 
-# Node (para cuando hagas el frontend)
-node_modules/
-dist/
+# Archivos temporales
+*.tmp
+*.temp
+EOF
