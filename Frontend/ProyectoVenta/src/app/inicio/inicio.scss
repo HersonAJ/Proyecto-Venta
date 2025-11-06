@@ -1,0 +1,64 @@
+/* inicio.component.scss */
+.promo-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-bottom: 2px solid #ffc107;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #0f0f0f 0%, #2d2d2d 100%);
+}
+
+.products-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.features-section {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+.product-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(255, 193, 7, 0.2);
+  }
+}
+
+.product-item {
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #ffc107 !important;
+    background-color: rgba(255, 193, 7, 0.1) !important;
+  }
+}
+
+.floating-badge {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%) !important;
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .promo-section .row {
+    text-align: center;
+  }
+  
+  .hero-section {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .display-5 {
+    font-size: 2rem;
+  }
+}
