@@ -2,7 +2,7 @@ package com.ventas.ventas.controllers;
 
 import com.ventas.ventas.DTOs.Login.LoginRequest;
 import com.ventas.ventas.DTOs.Login.LoginResponse;
-import com.ventas.ventas.DTOs.Login.AuthService;
+import com.ventas.ventas.security.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
