@@ -66,4 +66,20 @@ public class PerfilDB {
         }
         return null;
     }
+
+    public boolean actualizarAvatar(Integer usuarioId, Integer nuevoAvatarId) {
+        String sql = "UPDATE usuarios SET avatar_id = ? WHERE id = ? AND activo = true";
+
+        try (Connection conn = dataSource.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, nuevoAvatarId);
+            stmt.setInt(2, usuarioId);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

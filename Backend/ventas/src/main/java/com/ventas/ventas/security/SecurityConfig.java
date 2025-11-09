@@ -4,6 +4,7 @@ import com.ventas.ventas.DTOs.Login.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -33,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/registro").permitAll()
                         .requestMatchers("/api/usuario/perfil-completo").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/usuario/avatar").authenticated()
                         .requestMatchers("/api/auth/test").permitAll()
                         .requestMatchers("/api/auth/test-db").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
