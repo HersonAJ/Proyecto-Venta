@@ -57,7 +57,7 @@ export class AuthService {
 
   setToken(token: string): void {
     localStorage.setItem('authToken', token);
-    setTimeout(() => this.loggedInSubject.next(true), 0);
+    this.loggedInSubject.next(true);
   }
 
   getToken(): string | null {

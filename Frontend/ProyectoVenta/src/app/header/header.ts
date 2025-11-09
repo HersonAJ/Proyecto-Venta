@@ -1,11 +1,10 @@
-import { Component, ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../servicios/auth-service';
 import { PerfilService, PerfilCompleto } from '../servicios/perfil-service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -24,26 +23,21 @@ export class Header implements OnInit, OnDestroy {
   constructor(
     public authService: AuthService,
     private perfilService: PerfilService,
-    private router: Router,
-    private cdRef: ChangeDetectorRef
+    private router: Router
   ) { }
 
   ngOnInit() {
-    // Si ya está logueado, cargar el perfil
     if (this.authService.isLoggedIn()) {
       this.cargarDatosPerfil();
     }
 
-    // Escuchar cambios de login/logout
-    const sub = this.authService.loggedIn$
-      .pipe(delay(300)) 
-      .subscribe((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.cargarDatosPerfil();
-        } else {
-          this.perfilDataSubject.next(null);
-        }
-      });
+    const sub = this.authService.loggedIn$.subscribe((isLoggedIn) => {
+      if (isLoggedIn) {
+        this.cargarDatosPerfil();
+      } else {
+        this.perfilDataSubject.next(null);
+      }
+    });
 
     this.subscriptions.push(sub);
   }
@@ -56,28 +50,20 @@ export class Header implements OnInit, OnDestroy {
         next: (data) => {
           this.perfilDataSubject.next(data);
           this.loading = false;
-          this.cdRef.detectChanges();
         },
         error: (error) => {
           console.error('Error cargando datos del perfil: ', error);
           this.perfilDataSubject.next(null);
           this.loading = false;
-          this.cdRef.detectChanges();
         }
       });
     }
-  }
-
-  get perfilData(): PerfilCompleto | null {
-    return this.perfilDataSubject.value;
   }
 
   logout(): void {
     this.authService.logout();
     this.perfilDataSubject.next(null);
     this.router.navigate(['/inicio']);
-    this.subscriptions.forEach((s) => s.unsubscribe());
-    this.subscriptions = [];
   }
 
   ngOnDestroy() {
