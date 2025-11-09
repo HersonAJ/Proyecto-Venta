@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { RestConstants } from './rest-constants';
+import { RestConstants } from '../rest-constants';
 
 export interface RegisterRequest {
   nombre: string;

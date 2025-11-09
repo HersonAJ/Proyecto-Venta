@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RegistroService, RegisterRequest, RegisterResponse } from '../registro-service'; 
-import { AuthService } from '../auth-service';
+import { RegistroService, RegisterRequest, RegisterResponse } from '../servicios/registro-service'; 
+import { AuthService } from '../servicios/auth-service';
 
 interface AvatarOption {
   id: number;
@@ -74,13 +74,10 @@ export class RegistroComponent {
     this.loading = true;
     this.errorMessage = '';
 
-    console.log('Datos de registro: ', this.registerData);
-
     try {
       const response = await this.registroService.register(this.registerData).toPromise();
       
       if (response?.success) {
-        console.log('Usuario registrado con ID:', response.userId);
       
         if (response.token) {
           this.authService.setToken(response.token);
@@ -93,7 +90,6 @@ export class RegistroComponent {
         this.errorMessage = response?.error || 'Error en el registro';
       }
     } catch (error: any) {
-      console.error('Error en registro:', error);
       this.errorMessage = error.error || 'Error de conexión con el servidor';
     } finally {
       this.loading = false;
