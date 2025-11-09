@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, LoginRequest, LoginResponse } from '../servicios/auth-service';
+import { PerfilService } from '../servicios/perfil-service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class Login {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private perfilService: PerfilService
   ) {}
 
   onLogin() {
@@ -32,10 +34,11 @@ export class Login {
       next: (response: LoginResponse) => {
         this.loading = false;
         
-        if (response.success) {
-          this.authService.setToken(response.token);
-          this.router.navigate(['/inicio']);
-        } else {
+if (response.success) {
+  this.authService.setToken(response.token);
+  this.perfilService.getPerfilCompleto().subscribe(); // dispara la cache o preload
+  this.router.navigate(['/inicio']);
+} else {
           this.errorMessage = response.message;
         }
       },

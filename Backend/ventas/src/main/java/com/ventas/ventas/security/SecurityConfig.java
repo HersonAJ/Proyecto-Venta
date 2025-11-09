@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/registro").permitAll()
+                        .requestMatchers("/api/usuario/perfil-completo").authenticated()
                         .requestMatchers("/api/auth/test").permitAll()
                         .requestMatchers("/api/auth/test-db").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

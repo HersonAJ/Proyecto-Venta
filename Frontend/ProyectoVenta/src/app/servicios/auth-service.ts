@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
-import { RestConstants } from '../rest-constants'; 
+import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
+import { RestConstants } from '../rest-constants';
 
 export interface LoginRequest {
   email: string;
@@ -22,6 +22,8 @@ export interface LoginResponse {
 export class AuthService {
 
   private apiUrl: string;
+  private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
+  loggedIn$ = this.loggedInSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -55,6 +57,7 @@ export class AuthService {
 
   setToken(token: string): void {
     localStorage.setItem('authToken', token);
+    setTimeout(() => this.loggedInSubject.next(true), 0);
   }
 
   getToken(): string | null {
@@ -63,9 +66,14 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('authToken');
+    this.loggedInSubject.next(false);
+  }
+
+  private hasToken(): boolean {
+    return localStorage.getItem('authToken') !== null;
   }
 
   isLoggedIn(): boolean {
-    return this.getToken() !== null;
+    return this.loggedInSubject.value;
   }
 }
