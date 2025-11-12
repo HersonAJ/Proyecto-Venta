@@ -5,6 +5,7 @@ import { AuthService } from '../servicios/auth-service';
 import { PerfilService, PerfilCompleto } from '../servicios/perfil-service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { CarritoService } from '../servicios/carrito-service';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +23,7 @@ export class Header implements OnInit, OnDestroy {
 
   constructor(
     public authService: AuthService,
+    public carritoService: CarritoService,
     private perfilService: PerfilService,
     private router: Router
   ) { }

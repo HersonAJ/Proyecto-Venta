@@ -23,7 +23,7 @@
                 <small>
                   <span class="counter-highlight-small">
                     @if (authService.isLoggedIn() && (perfilData$ | async); as perfil) {
-                      {{ perfil?.fidelidad?.totalPersonasAcumulando ?? 0 }}
+                    {{ perfil?.fidelidad?.totalPersonasAcumulando ?? 0 }}
                     } @else { 154 }
                   </span>
                   personas acumulando puntos
@@ -40,7 +40,9 @@
             <!-- Progreso fidelidad -->
             <div class="text-center progress-container-small">
               <div class="h5 fw-bold mb-0 text-warning progress-number-small">
-                {{ perfil?.fidelidad?.promocionActual ?? 0 }}/{{ perfil?.fidelidad?.metaPromocion ?? 7 }}
+                {{ perfil?.fidelidad?.promocionActual ?? 0 }}/{{
+                  perfil?.fidelidad?.metaPromocion ?? 7
+                }}
               </div>
               <div
                 class="progress mt-1"
@@ -120,10 +122,14 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/inicio" routerLinkActive="active">Inicio</a>
+            <a class="nav-link text-white fs-5" routerLink="/inicio" routerLinkActive="active"
+              >Inicio</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white fs-5" routerLink="/menu" routerLinkActive="active">Menú</a>
+            <a class="nav-link text-white fs-5" routerLink="/menu" routerLinkActive="active"
+              >Menú</a
+            >
           </li>
           <li class="nav-item">
             <a class="nav-link text-white fs-5" routerLink="/pedidos" routerLinkActive="active">
@@ -153,11 +159,13 @@
           </div>
           <div class="nav-item">
             <a class="nav-link text-white position-relative fs-5" routerLink="/carrito">
-              🛒 Carrito
+              🛒 Carrito @if (carritoService.getCarritoActual().cantidadTotal > 0) {
               <span
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
-                >2</span
               >
+                {{ carritoService.getCarritoActual().cantidadTotal }}
+              </span>
+              }
             </a>
           </div>
           } @else {
