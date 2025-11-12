@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/usuario/perfil-completo").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/usuario/avatar").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/productos/crear").hasRole("admin")
+                        .requestMatchers("/api/menu/obtener").permitAll()
                         .requestMatchers("/api/auth/test").permitAll()
                         .requestMatchers("/api/auth/test-db").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
