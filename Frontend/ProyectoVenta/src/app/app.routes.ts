@@ -5,6 +5,7 @@ import { RegistroComponent } from './registro-component/registro-component';
 import { PerfilComponent } from './perfil-component/perfil-component';
 import { CrearProductoComponent } from './crear-producto-component/crear-producto-component';
 import { MenuComponent } from './menu-component/menu-component';
+import { PersonalizarPedidoComponent } from './personalizar-pedido-component/personalizar-pedido-component';
 
 export const routes: Routes = [
     { path: 'inicio', component: Inicio},
@@ -13,4 +14,5 @@ export const routes: Routes = [
     { path: 'perfil', component: PerfilComponent},
     { path: 'crear-producto', component: CrearProductoComponent},
     { path: 'menu', component: MenuComponent},
+    { path: 'personalizar/:id', component: PersonalizarPedidoComponent},
 ];

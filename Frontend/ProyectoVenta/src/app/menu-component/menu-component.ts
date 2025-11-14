@@ -46,8 +46,9 @@ export class MenuComponent implements OnInit {
   }
 
   seleccionarProducto(producto: ProductoMenu) {
-    // Navegar a página de personalización con el producto seleccionado
-    this.router.navigate(['/personalizar', producto.id]);
+    this.router.navigate(['/personalizar', producto.id], {
+      state: { producto: producto }
+    });
   }
 
   getProductosPorTipo(tipo: string): ProductoMenu[] {
