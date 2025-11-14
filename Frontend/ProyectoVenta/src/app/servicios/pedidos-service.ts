@@ -4,6 +4,29 @@ import { Observable } from 'rxjs';
 import { RestConstants } from '../rest-constants';
 import { AuthService } from './auth-service';
 
+export interface PedidoActivo {
+  id: number;
+  estado: string;
+  total: number;
+  fechaPedido: string;
+  metodoPago: string;
+  cantidadItems: number;
+  detalles: PedidoDetalle[];
+}
+
+export interface PedidoDetalle {
+  productoNombre: string;
+  cantidad: number;
+  precioUnitario: number;
+  subtotal: number;
+}
+
+export interface MisPedidosResponse {
+  success: boolean;
+  pedidos: PedidoActivo[];
+  message?: string;
+}
+
 export interface PedidoRequest {
   usuarioId: number;
   items: PedidoItemRequest[];
@@ -58,7 +81,7 @@ export class PedidosService {
     const items: PedidoItemRequest[] = carrito.items.map((item: any) => ({
       productoId: item.producto.id,
       cantidad: item.cantidad,
-      precioUnitario: item.precio, 
+      precioUnitario: item.precio,
       personalizaciones: item.personalizacion.ingredientesAQuitar.map((ingredienteId: number) => ({
         ingredienteId: ingredienteId,
         accion: 'quitar' as const
@@ -70,5 +93,15 @@ export class PedidosService {
       items: items,
       total: carrito.total
     };
+  }
+
+  obtenerMisPedidos(): Observable<MisPedidosResponse> {
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<MisPedidosResponse>(`${this.apiUrl}mis-pedidos`, { headers });
   }
 }

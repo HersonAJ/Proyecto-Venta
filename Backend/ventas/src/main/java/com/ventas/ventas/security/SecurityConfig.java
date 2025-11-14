@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/productos/crear").hasRole("admin")
                         .requestMatchers("/api/menu/obtener").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/pedidos/crear").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/pedidos/mis-pedidos").authenticated()
                         .requestMatchers("/api/auth/test").permitAll()
                         .requestMatchers("/api/auth/test-db").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

@@ -7,6 +7,7 @@ import { CrearProductoComponent } from './crear-producto-component/crear-product
 import { MenuComponent } from './menu-component/menu-component';
 import { PersonalizarPedidoComponent } from './personalizar-pedido-component/personalizar-pedido-component';
 import { CarritoComponent } from './carrito-component/carrito-component';
+import { MisPedidosComponent } from './mis-pedidos-component/mis-pedidos-component';
 
 export const routes: Routes = [
     { path: 'inicio', component: Inicio},
@@ -17,4 +18,5 @@ export const routes: Routes = [
     { path: 'menu', component: MenuComponent},
     { path: 'personalizar/:id', component: PersonalizarPedidoComponent},
     { path: 'carrito', component: CarritoComponent},
+    { path: 'mis-pedidos', component: MisPedidosComponent},
 ];
