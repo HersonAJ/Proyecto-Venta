@@ -16,7 +16,7 @@ public class PedidosEntregadosDB {
         this.dataSource = dataSource;
     }
 
-    public Map<String, Object> marcarPedidoComoEntregado(Integer pedidoId) {
+    public Map<String, Object> marcarPedidoComoEntregado(Integer pedidoId, Integer trabajadorId) {
         Connection conn = null;
         Map<String, Object> resultado = new HashMap<>();
 
@@ -24,8 +24,8 @@ public class PedidosEntregadosDB {
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
 
-            // 1. Obtener información del pedido y usuario
-            Map<String, Object> infoPedido = obtenerInfoPedidoYUsuario(conn, pedidoId);
+            // 1. Obtener información completa del pedido y usuario
+            Map<String, Object> infoPedido = obtenerInfoCompletaPedido(conn, pedidoId);
             if (infoPedido == null) {
                 resultado.put("success", false);
                 resultado.put("message", "Pedido no encontrado");
@@ -34,6 +34,7 @@ public class PedidosEntregadosDB {
 
             Integer usuarioId = (Integer) infoPedido.get("usuarioId");
             String clienteNombre = (String) infoPedido.get("clienteNombre");
+            Double totalPedido = (Double) infoPedido.get("total");
 
             // 2. Contar productos "Cheveres" en el pedido
             int cheveresEnPedido = contarCheveresEnPedido(conn, pedidoId);
@@ -47,16 +48,26 @@ public class PedidosEntregadosDB {
                 return resultado;
             }
 
-            // 4. Actualizar fidelidad del usuario
+            // 4. Registrar la venta
+            boolean ventaRegistrada = registrarVenta(conn, pedidoId, usuarioId, trabajadorId, totalPedido);
+            if (!ventaRegistrada) {
+                resultado.put("success", false);
+                resultado.put("message", "Error al registrar la venta");
+                conn.rollback();
+                return resultado;
+            }
+
+            // 5. Actualizar fidelidad del usuario
             Map<String, Object> fidelidadActualizada = actualizarFidelidad(conn, usuarioId, cheveresEnPedido);
 
-            // 5. Commit de todas las operaciones
+            // 6. Commit de todas las operaciones
             conn.commit();
 
             resultado.put("success", true);
             resultado.put("message", "Pedido marcado como entregado exitosamente");
             resultado.put("fidelidadActualizada", fidelidadActualizada);
             resultado.put("clienteNombre", clienteNombre);
+            resultado.put("ventaRegistrada", true);
 
         } catch (SQLException e) {
             if (conn != null) {
@@ -82,10 +93,10 @@ public class PedidosEntregadosDB {
         }
         return resultado;
     }
-
-    private Map<String, Object> obtenerInfoPedidoYUsuario(Connection conn, Integer pedidoId) throws SQLException {
+    
+    private Map<String, Object> obtenerInfoCompletaPedido(Connection conn, Integer pedidoId) throws SQLException {
         String sql = """
-            SELECT p.usuario_id, u.nombre as cliente_nombre
+            SELECT p.usuario_id, u.nombre as cliente_nombre, p.total
             FROM pedidos p
             JOIN usuarios u ON p.usuario_id = u.id
             WHERE p.id = ? AND p.estado = 'pendiente'
@@ -99,6 +110,7 @@ public class PedidosEntregadosDB {
                 Map<String, Object> info = new HashMap<>();
                 info.put("usuarioId", rs.getInt("usuario_id"));
                 info.put("clienteNombre", rs.getString("cliente_nombre"));
+                info.put("total", rs.getDouble("total"));
                 return info;
             }
         }
@@ -134,6 +146,27 @@ public class PedidosEntregadosDB {
         }
     }
 
+    private boolean registrarVenta(Connection conn, Integer pedidoId, Integer usuarioId,
+                                   Integer trabajadorId, Double total) throws SQLException {
+        String sql = """
+            INSERT INTO ventas (pedido_id, usuario_id, trabajador_id, total, metodo_pago, tipo_venta, descripcion)
+            VALUES (?, ?, ?, ?, 'efectivo', 'normal', ?)
+            """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pedidoId);
+            stmt.setInt(2, usuarioId);
+            stmt.setInt(3, trabajadorId);
+            stmt.setDouble(4, total);
+
+            String descripcion = "Pedido #" + pedidoId + " - Cliente ID: " + usuarioId;
+            stmt.setString(5, descripcion);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        }
+    }
+
     private Map<String, Object> actualizarFidelidad(Connection conn, Integer usuarioId, int cheveresEnPedido) throws SQLException {
         String sqlSelect = "SELECT promocion_actual, promociones_pendientes FROM fidelidad WHERE usuario_id = ?";
         String sqlInsert = "INSERT INTO fidelidad (usuario_id, hotdogs_comprados, puntos_acumulados, promocion_actual, promociones_pendientes) VALUES (?, ?, ?, ?, ?)";
@@ -155,15 +188,12 @@ public class PedidosEntregadosDB {
             }
         }
 
-        // 🎯 PUNTO DE MODIFICACIÓN: Aquí se puede cambiar la relación puntos/cheveres
-        // Actualmente: 1 chevere = 1 punto
-        // Para cambiar: modificar esta línea y el cálculo de totalPuntos
-        int totalPuntos = cheveresEnPedido; // ← CAMBIAR AQUÍ si quieres diferente relación
+        int totalPuntos = cheveresEnPedido;
 
         // Calcular nuevas promociones ganadas en ESTE pedido
         int totalAcumulado = promocionActual + totalPuntos;
-        int nuevasPromociones = totalAcumulado / 7; // Cuántas promociones completó
-        int nuevoPromocionActual = totalAcumulado % 7; // Resto para siguiente promoción
+        int nuevasPromociones = totalAcumulado / 7;
+        int nuevoPromocionActual = totalAcumulado % 7;
         int totalPromocionesPendientes = promocionesPendientes + nuevasPromociones;
 
         // Insertar o actualizar
@@ -201,6 +231,7 @@ public class PedidosEntregadosDB {
 
         return fidelidad;
     }
+
     private void registrarPromocionesGanadas(Connection conn, Integer usuarioId, int nuevasPromociones) throws SQLException {
         String sql = "INSERT INTO historial_promociones (usuario_id, tipo, descripcion) VALUES (?, 'hotdog_gratis', ?)";
 

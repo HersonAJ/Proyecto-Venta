@@ -25,8 +25,9 @@ public class PedidosEntregadosController {
             @PathVariable Integer pedidoId,
             @RequestHeader("Authorization") String authorizationHeader) {
         try {
-            // Verificar que el usuario sea trabajador o admin
-            if (!esTrabajadorOAdmin(authorizationHeader)) {
+            // Verificar que el usuario sea trabajador o admin y obtener su ID
+            Integer trabajadorId = obtenerTrabajadorId(authorizationHeader);
+            if (trabajadorId == null) {
                 return ResponseEntity.status(403).body(Map.of("success", false, "message", "No tiene permisos para realizar esta acción"));
             }
 
@@ -34,24 +35,27 @@ public class PedidosEntregadosController {
             if (pedidoId == null || pedidoId <= 0) {
                 return ResponseEntity.badRequest().body(Map.of("success", false, "message", "ID de pedido inválido"));
             }
-
-            Map<String, Object> resultado = pedidosEntregadosDB.marcarPedidoComoEntregado(pedidoId);
+            Map<String, Object> resultado = pedidosEntregadosDB.marcarPedidoComoEntregado(pedidoId, trabajadorId);
 
             if ((Boolean) resultado.get("success")) {
                 Map<String, Object> response = Map.of(
                         "success", true,
-                        "message", resultado.get("message")
+                        "message", resultado.get("message"),
+                        "ventaRegistrada", resultado.get("ventaRegistrada")
                 );
 
-                // 🟡 AGREGAR: Información de promociones si las hay
-                if (resultado.containsKey("nuevasPromociones")) {
-                    response = Map.of(
-                            "success", true,
-                            "message", resultado.get("message"),
-                            "nuevasPromociones", resultado.get("nuevasPromociones"),
-                            "mensajePromocion", resultado.get("mensajePromocion"),
-                            "clienteNombre", resultado.get("clienteNombre")
-                    );
+                if (resultado.containsKey("nuevasPromocionesGanadas")) {
+                    Integer nuevasPromociones = (Integer) resultado.get("nuevasPromocionesGanadas");
+                    if (nuevasPromociones > 0) {
+                        response = Map.of(
+                                "success", true,
+                                "message", resultado.get("message"),
+                                "ventaRegistrada", resultado.get("ventaRegistrada"),
+                                "nuevasPromociones", nuevasPromociones,
+                                "mensajePromocion", "¡" + resultado.get("clienteNombre") + " ganó " + nuevasPromociones + " promoción(es)!",
+                                "clienteNombre", resultado.get("clienteNombre")
+                        );
+                    }
                 }
 
                 return ResponseEntity.ok(response);
@@ -69,22 +73,24 @@ public class PedidosEntregadosController {
         }
     }
 
-    private boolean esTrabajadorOAdmin(String authorizationHeader) {
+    private Integer obtenerTrabajadorId(String authorizationHeader) {
         try {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 String token = authorizationHeader.substring(7);
 
                 if (!jwtUtil.validateToken(token)) {
-                    return false;
+                    return null;
                 }
 
                 String rol = jwtUtil.getRoleFromToken(token);
-                return "trabajador".equals(rol) || "admin".equals(rol);
+                if ("trabajador".equals(rol) || "admin".equals(rol)) {
+                    return jwtUtil.getUserIdFromToken(token);
+                }
             }
-            return false;
+            return null;
         } catch (Exception e) {
-            System.out.println("Error verificando rol del usuario: " + e.getMessage());
-            return false;
+            System.out.println("Error obteniendo ID del trabajador: " + e.getMessage());
+            return null;
         }
     }
 }
