@@ -35,16 +35,31 @@ public class PedidosEntregadosController {
                 return ResponseEntity.badRequest().body(Map.of("success", false, "message", "ID de pedido inválido"));
             }
 
-            // Marcar pedido como entregado
-            boolean actualizado = pedidosEntregadosDB.marcarPedidoComoEntregado(pedidoId);
+            Map<String, Object> resultado = pedidosEntregadosDB.marcarPedidoComoEntregado(pedidoId);
 
-            if (actualizado) {
-                return ResponseEntity.ok(Map.of(
+            if ((Boolean) resultado.get("success")) {
+                Map<String, Object> response = Map.of(
                         "success", true,
-                        "message", "Pedido marcado como entregado exitosamente"
-                ));
+                        "message", resultado.get("message")
+                );
+
+                // 🟡 AGREGAR: Información de promociones si las hay
+                if (resultado.containsKey("nuevasPromociones")) {
+                    response = Map.of(
+                            "success", true,
+                            "message", resultado.get("message"),
+                            "nuevasPromociones", resultado.get("nuevasPromociones"),
+                            "mensajePromocion", resultado.get("mensajePromocion"),
+                            "clienteNombre", resultado.get("clienteNombre")
+                    );
+                }
+
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(404).body(Map.of("success", false, "message", "Pedido no encontrado o ya fue entregado"));
+                return ResponseEntity.status(404).body(Map.of(
+                        "success", false,
+                        "message", resultado.get("message")
+                ));
             }
 
         } catch (Exception e) {
