@@ -38,11 +38,11 @@ public class AuthService {
                 String storedPassword = rs.getString("password");
                 String nombre = rs.getString("nombre");
                 String rol = rs.getString("rol");
+                Integer userId = rs.getInt("id");
 
                 // Verificar contraseña (encriptada)
                 if (passwordEncoder.matches(password, storedPassword)) {
-                    // Generar token JWT
-                    return jwtUtil.generateToken(email, rol, nombre);
+                    return jwtUtil.generateToken(email, rol, nombre, userId);
                 }
             }
         } catch (Exception e) {

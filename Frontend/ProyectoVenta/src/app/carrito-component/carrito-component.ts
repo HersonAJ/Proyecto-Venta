@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CarritoService, ItemCarrito, CarritoState } from '../servicios/carrito-service';
 import { AuthService } from '../servicios/auth-service';
+import { PedidosService } from '../servicios/pedidos-service';
 
 @Component({
   selector: 'app-carrito-component',
@@ -19,15 +20,16 @@ export class CarritoComponent implements OnInit, OnDestroy {
     total: 0,
     cantidadTotal: 0
   };
-  
+
   loading: boolean = false;
   private carritoSubscription!: Subscription;
 
   constructor(
     private carritoService: CarritoService,
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private pedidosService: PedidosService
+  ) { }
 
   ngOnInit() {
     // Suscribirse a cambios del carrito
@@ -50,28 +52,50 @@ export class CarritoComponent implements OnInit, OnDestroy {
     this.carritoService.eliminarItem(index);
   }
 
-vaciarCarritoConfirmado() {
-  this.carritoService.limpiarCarrito();
-}
+  vaciarCarritoConfirmado() {
+    this.carritoService.limpiarCarrito();
+  }
 
   confirmarPedido() {
     if (!this.authService.isLoggedIn()) {
-      // Redirigir a login si no está autenticado
-      this.router.navigate(['/login'], { 
-        queryParams: { returnUrl: '/carrito' } 
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: '/carrito' }
       });
       return;
     }
 
-    if (this.carrito.items.length === 0) {
-      alert('El carrito está vacío');
-      return;
-    }
+    const usuarioId = this.authService.getUserId();
+    if (usuarioId === null) return;
 
-    // Navegar a confirmación de pedido
-    this.router.navigate(['/confirmar-pedido']);
+    this.loading = true;
+
+    const pedidoData = this.pedidosService.convertirCarritoAPedido(this.carrito, usuarioId);
+
+    this.pedidosService.crearPedido(pedidoData).subscribe({
+      next: (response) => {
+        this.loading = false;
+        if (response.success) {
+          this.carritoService.limpiarCarrito();
+          this.mostrarModalExito();
+        } else {
+          alert('Error: ' + response.message);
+        }
+      },
+      error: (error) => {
+        this.loading = false;
+        console.error('Error creando pedido:', error);
+        alert('Error al crear el pedido');
+      }
+    });
   }
 
+  mostrarModalExito() {
+    const modalElement = document.getElementById('pedidoExitoModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
   getIngredientesQuitados(item: ItemCarrito): string {
     if (!item.personalizacion.ingredientesAQuitar.length) {
       return 'Sin personalizaciones';

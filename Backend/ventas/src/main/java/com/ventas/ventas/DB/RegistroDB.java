@@ -23,7 +23,6 @@ public class RegistroDB {
     }
 
     public String registrarUsuarioYGenerarToken(Usuario usuario, JwtUtil jwtUtil) {
-        // Validar que aceptó términos
         if (!usuario.getAceptaTerminos()) {
             return null;
         }
@@ -43,8 +42,18 @@ public class RegistroDB {
             int affectedRows = stmt.executeUpdate();
 
             if (affectedRows > 0) {
-                // Si se registró exitosamente, generar y retornar JWT
-                return jwtUtil.generateToken(usuario.getEmail(), "cliente", usuario.getNombre());
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        Integer userId = generatedKeys.getInt(1);
+                        return jwtUtil.generateToken(
+                                usuario.getEmail(),
+                                "cliente",
+                                usuario.getNombre(),
+                                userId
+                        );
+                    }
+                }
+                return null;
             }
             return null;
 

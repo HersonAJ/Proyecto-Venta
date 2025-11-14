@@ -182,3 +182,24 @@
     </div>
   </div>
 </section>
+
+<div class="modal fade" id="pedidoExitoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark border border-success">
+      <div class="modal-header border-success">
+        <h5 class="modal-title text-success fw-bold">✅ Pedido Confirmado</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-white text-center">
+        <p class="mb-3">Tu pedido ha sido recibido y está en preparación</p>
+        <p class="small opacity-90 mb-0">Te notificaremos cuando esté listo para recoger</p>
+      </div>
+      <div class="modal-footer border-success">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Seguir Comprando</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/mis-pedidos">
+          Ver Mis Pedidos
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
