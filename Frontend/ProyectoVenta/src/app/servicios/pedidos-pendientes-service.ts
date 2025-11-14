@@ -30,6 +30,11 @@ export interface PedidosPendientesResponse {
   message?: string;
 }
 
+export interface MarcarEntregadoResponse {
+  success: boolean;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -54,6 +59,21 @@ export class PedidosPendientesService {
 
     return this.http.get<PedidosPendientesResponse>(
       `${this.apiUrl}pedidos-pendientes`, 
+      { headers }
+    );
+  }
+
+  marcarPedidoComoEntregado(pedidoId: number): Observable<MarcarEntregadoResponse> {
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.put<MarcarEntregadoResponse>(
+      `${this.apiUrl}pedidos/${pedidoId}/entregado`,
+      {}, // Body vacío para PUT
       { headers }
     );
   }

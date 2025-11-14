@@ -16,6 +16,8 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
   pedidos: PedidoPendiente[] = [];
   loading: boolean = true;
   errorMessage: string = '';
+  mensajeExito: string = '';
+  pedidoSeleccionado: number | null = null;
   private pedidosSubscription!: Subscription;
 
   constructor(
@@ -37,6 +39,7 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
   cargarPedidosPendientes() {
     this.loading = true;
     this.errorMessage = '';
+    this.mensajeExito = '';
 
     this.pedidosPendientesService.obtenerPedidosPendientes().subscribe({
       next: (response: PedidosPendientesResponse) => {
@@ -51,6 +54,37 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.errorMessage = 'Error de conexión al cargar los pedidos';
         console.error('Error cargando pedidos pendientes:', error);
+      }
+    });
+  }
+
+  marcarComoEntregado() {
+    if (!this.pedidoSeleccionado) return;
+
+    this.pedidosPendientesService.marcarPedidoComoEntregado(this.pedidoSeleccionado).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.mensajeExito = `Pedido #${this.pedidoSeleccionado} marcado como entregado`;
+          
+          // Cerrar modal
+          const modalElement = document.getElementById('confirmarEntregaModal');
+          if (modalElement) {
+            const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+            modal.hide();
+          }
+          
+          // Recargar la lista después de 1 segundo
+          setTimeout(() => {
+            this.cargarPedidosPendientes();
+            this.pedidoSeleccionado = null;
+          }, 1000);
+        } else {
+          this.errorMessage = response.message;
+        }
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Error al marcar el pedido como entregado';
+        console.error('Error marcando pedido como entregado:', error);
       }
     });
   }
@@ -102,6 +136,17 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.pedidosSubscription) {
       this.pedidosSubscription.unsubscribe();
+    }
+  }
+
+    confirmarEntrega(pedidoId: number) {
+    this.pedidoSeleccionado = pedidoId;
+    
+    // Mostrar modal de confirmación
+    const modalElement = document.getElementById('confirmarEntregaModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
     }
   }
 }

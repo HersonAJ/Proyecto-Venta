@@ -86,14 +86,23 @@
                         }
                       </div>
                     </div>
-                    <div class="col-md-4 text-md-end">
-                      <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end justify-content-md-end">
-                        <span class="badge bg-warning text-dark fs-6">
-                          {{ pedido.metodoPago === 'efectivo' ? '💰 Efectivo' : '💳 Tarjeta' }}
-                        </span>
-                        <h4 class="text-success fw-bold mb-0">Q{{ pedido.total | number:'1.2-2' }}</h4>
-                      </div>
-                    </div>
+<!-- En la sección del header de cada pedido, agregar: -->
+<div class="col-md-4 text-md-end">
+  <div class="d-flex flex-column flex-md-row gap-2 align-items-md-end justify-content-md-end">
+    <span class="badge bg-warning text-dark fs-6">
+      {{ pedido.metodoPago === 'efectivo' ? '💰 Efectivo' : '💳 Tarjeta' }}
+    </span>
+    <h4 class="text-success fw-bold mb-0">Q{{ pedido.total | number:'1.2-2' }}</h4>
+    <!-- Botón Entregado -->
+<button 
+  class="btn btn-success btn-sm fw-bold"
+  (click)="confirmarEntrega(pedido.id)"
+>
+  ✅ Entregar
+</button>
+
+  </div>
+</div>
                   </div>
                 </div>
 
@@ -142,3 +151,29 @@
     </div>
   </div>
 </section>
+
+<!-- Modal de Confirmación de Entrega -->
+<div class="modal fade" id="confirmarEntregaModal" tabindex="-1" aria-labelledby="confirmarEntregaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark border border-warning">
+      <div class="modal-header border-warning">
+        <h5 class="modal-title text-warning fw-bold" id="confirmarEntregaModalLabel">✅ Confirmar Entrega</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-white">
+        <p class="mb-3">¿Confirmas que el pedido <strong class="text-warning">#{{ pedidoSeleccionado }}</strong> ha sido entregado al cliente y recibido el pago?</p>
+        <div class="alert alert-info border border-info">
+          <small>
+            <strong>📝 Nota:</strong> Al marcar como entregado, el sistema actualizará el progreso de fidelidad del cliente.
+          </small>
+        </div>
+      </div>
+      <div class="modal-footer border-warning">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success fw-bold" (click)="marcarComoEntregado()">
+          ✅ Sí, Marcar como Entregado
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
