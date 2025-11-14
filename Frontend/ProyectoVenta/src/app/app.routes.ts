@@ -10,6 +10,7 @@ import { CarritoComponent } from './carrito-component/carrito-component';
 import { MisPedidosComponent } from './mis-pedidos-component/mis-pedidos-component';
 import { CrearTrabajadorComponent } from './crear-trabajador-component/crear-trabajador-component';
 import { PedidosPendientesComponent } from './pedidos-pendientes-component/pedidos-pendientes-component';
+import { CanjearPromoComponent } from './canjear-promo-component/canjear-promo-component';
 
 export const routes: Routes = [
     { path: 'inicio', component: Inicio},
@@ -23,4 +24,5 @@ export const routes: Routes = [
     { path: 'mis-pedidos', component: MisPedidosComponent},
     { path: 'crear-trabajador', component: CrearTrabajadorComponent},
     { path: 'pedidos-pendientes', component: PedidosPendientesComponent},
+    { path: 'canjear-promo', component: CanjearPromoComponent},
 ];
