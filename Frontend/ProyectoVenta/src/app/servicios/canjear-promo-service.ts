@@ -17,12 +17,25 @@ export interface CanjearPromocionResponse {
   cantidadCanjeada?: number;
 }
 
-export interface ConsultarPromocionesRequest {
-  usuarioId: number;
+export interface UsuarioFidelidad {
+  id: number;
+  nombre: string;
+  email: string;
+  promocionesPendientes: number;
+  promocionesCanjeadas: number;
+  promocionActual: number;
+}
+
+export interface BuscarUsuariosResponse {
+  success: boolean;
+  usuarios?: UsuarioFidelidad[];
+  totalEncontrados?: number;
+  message?: string;
 }
 
 export interface ConsultarPromocionesResponse {
   success: boolean;
+  id?: number;
   nombre?: string;
   email?: string;
   promocionesPendientes?: number;
@@ -63,6 +76,22 @@ export class CanjearPromoService {
       `${this.apiUrl}promociones/canjear`,
       body,
       { headers }
+    );
+  }
+
+  buscarUsuariosPorNombre(nombre: string): Observable<BuscarUsuariosResponse> {
+    const token = this.authService.getToken();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<BuscarUsuariosResponse>(
+      `${this.apiUrl}promociones/buscar`,
+      { 
+        headers,
+        params: { nombre } 
+      }
     );
   }
 

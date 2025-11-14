@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -196,17 +198,72 @@ public class CanjearPromocionDB {
         }
     }
 
+    public Map<String, Object> consultarPromocionesPorNombre(String nombre) {
+        Map<String, Object> resultado = new HashMap<>();
+
+        String sql = """
+        SELECT u.id, u.nombre, u.email, 
+               COALESCE(f.promociones_pendientes, 0) as promociones_pendientes,
+               COALESCE(f.promociones_canjeadas, 0) as promociones_canjeadas,
+               COALESCE(f.promocion_actual, 0) as promocion_actual
+        FROM usuarios u
+        LEFT JOIN fidelidad f ON u.id = f.usuario_id
+        WHERE u.activo = true 
+        AND (LOWER(REPLACE(REPLACE(REPLACE(u.nombre, 'á', 'a'), 'é', 'e'), 'í', 'i')) LIKE LOWER(?)
+             OR LOWER(u.nombre) LIKE LOWER(?))
+        LIMIT 10
+        """;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // 🟡 CAMBIO: Preparar parámetro de búsqueda
+            String parametroBusqueda = "%" + nombre.trim() + "%";
+            stmt.setString(1, parametroBusqueda);
+            stmt.setString(2, parametroBusqueda);
+
+            ResultSet rs = stmt.executeQuery();
+
+            List<Map<String, Object>> usuarios = new ArrayList<>();
+
+            while (rs.next()) {
+                Map<String, Object> usuario = new HashMap<>();
+                usuario.put("id", rs.getInt("id"));
+                usuario.put("nombre", rs.getString("nombre"));
+                usuario.put("email", rs.getString("email"));
+                usuario.put("promocionesPendientes", rs.getInt("promociones_pendientes"));
+                usuario.put("promocionesCanjeadas", rs.getInt("promociones_canjeadas"));
+                usuario.put("promocionActual", rs.getInt("promocion_actual"));
+                usuarios.add(usuario);
+            }
+
+            if (!usuarios.isEmpty()) {
+                resultado.put("success", true);
+                resultado.put("usuarios", usuarios);
+                resultado.put("totalEncontrados", usuarios.size());
+            } else {
+                resultado.put("success", false);
+                resultado.put("message", "No se encontraron usuarios con ese nombre");
+            }
+
+        } catch (SQLException e) {
+            resultado.put("success", false);
+            resultado.put("message", "Error consultando promociones");
+        }
+        return resultado;
+    }
+
     public Map<String, Object> consultarPromocionesUsuario(Integer usuarioId) {
         Map<String, Object> resultado = new HashMap<>();
         String sql = """
-            SELECT u.nombre, u.email, 
-                   COALESCE(f.promociones_pendientes, 0) as promociones_pendientes,
-                   COALESCE(f.promociones_canjeadas, 0) as promociones_canjeadas,
-                   COALESCE(f.promocion_actual, 0) as promocion_actual
-            FROM usuarios u
-            LEFT JOIN fidelidad f ON u.id = f.usuario_id
-            WHERE u.id = ? AND u.activo = true
-            """;
+        SELECT u.id, u.nombre, u.email, 
+               COALESCE(f.promociones_pendientes, 0) as promociones_pendientes,
+               COALESCE(f.promociones_canjeadas, 0) as promociones_canjeadas,
+               COALESCE(f.promocion_actual, 0) as promocion_actual
+        FROM usuarios u
+        LEFT JOIN fidelidad f ON u.id = f.usuario_id
+        WHERE u.id = ? AND u.activo = true
+        """;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -216,6 +273,7 @@ public class CanjearPromocionDB {
 
             if (rs.next()) {
                 resultado.put("success", true);
+                resultado.put("id", rs.getInt("id"));
                 resultado.put("nombre", rs.getString("nombre"));
                 resultado.put("email", rs.getString("email"));
                 resultado.put("promocionesPendientes", rs.getInt("promociones_pendientes"));

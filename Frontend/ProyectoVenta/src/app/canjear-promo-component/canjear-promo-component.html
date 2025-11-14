@@ -17,7 +17,7 @@
 
           <!-- Búsqueda de Usuario -->
           <div class="busqueda-section mb-4">
-            <h4 class="text-warning fw-bold mb-3">🔍 Buscar Usuario</h4>
+            <h4 class="text-warning fw-bold mb-3">🔍 Buscar Usuario Por Nombre</h4>
             
             <div class="input-group">
               <input 
@@ -25,12 +25,12 @@
                 class="form-control bg-dark text-white border-warning" 
                 placeholder="Ingresa el ID del usuario"
                 [(ngModel)]="criterioBusqueda"
-                (keyup.enter)="buscarUsuario()"
+                (keyup.enter)="buscarUsuarios()"
               >
               <button 
                 class="btn btn-warning fw-bold" 
                 type="button"
-                (click)="buscarUsuario()"
+                (click)="buscarUsuarios()"
                 [disabled]="buscando"
               >
                 @if (!buscando) {

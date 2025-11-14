@@ -148,4 +148,51 @@ public class CanjearPromocionController {
             return false;
         }
     }
+
+    @GetMapping("/promociones/buscar")
+    public ResponseEntity<?> buscarUsuariosPorNombre(
+            @RequestParam String nombre,
+            @RequestHeader("Authorization") String authorizationHeader) {
+        try {
+            // Verificar que el usuario sea trabajador o admin
+            if (!esTrabajadorOAdmin(authorizationHeader)) {
+                return ResponseEntity.status(403).body(Map.of(
+                        "success", false,
+                        "message", "No tiene permisos para realizar esta acción"
+                ));
+            }
+
+            // Validar nombre
+            if (nombre == null || nombre.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "Nombre de búsqueda inválido"
+                ));
+            }
+
+            // Buscar usuarios por nombre
+            Map<String, Object> resultado = canjearPromocionDB.consultarPromocionesPorNombre(nombre.trim());
+
+            if ((Boolean) resultado.get("success")) {
+                return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "usuarios", resultado.get("usuarios"),
+                        "totalEncontrados", resultado.get("totalEncontrados")
+                ));
+            } else {
+                return ResponseEntity.status(404).body(Map.of(
+                        "success", false,
+                        "message", resultado.get("message")
+                ));
+            }
+
+        } catch (Exception e) {
+            System.out.println("ERROR buscando usuarios: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Error interno del servidor"
+            ));
+        }
+    }
 }

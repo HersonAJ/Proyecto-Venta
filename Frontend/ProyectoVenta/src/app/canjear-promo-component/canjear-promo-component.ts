@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CanjearPromoService, ConsultarPromocionesResponse } from '../servicios/canjear-promo-service';
+import { CanjearPromoService, BuscarUsuariosResponse, UsuarioFidelidad } from '../servicios/canjear-promo-service';
 import { AuthService } from '../servicios/auth-service';
 
 @Component({
@@ -13,15 +13,14 @@ import { AuthService } from '../servicios/auth-service';
 })
 export class CanjearPromoComponent implements OnInit {
 
-  // Búsqueda de usuario
   criterioBusqueda: string = '';
   buscando: boolean = false;
   
-  // Resultados de búsqueda
-  usuarioEncontrado: any = null;
+  // 🟡 VOLVER A usuarioEncontrado para mantener compatibilidad con HTML
+  usuariosEncontrados: UsuarioFidelidad[] = [];
+  usuarioEncontrado: UsuarioFidelidad | null = null;
   errorBusqueda: string = '';
   
-  // Canje
   cantidadCanjear: number = 1;
   canjeando: boolean = false;
   mensajeExito: string = '';
@@ -34,52 +33,50 @@ export class CanjearPromoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Verificar que el usuario sea trabajador o admin
     if (!this.authService.isTrabajador()) {
       this.router.navigate(['/inicio']);
       return;
     }
   }
 
-  buscarUsuario() {
+  buscarUsuarios() {
     if (!this.criterioBusqueda.trim()) {
-      this.errorBusqueda = 'Ingresa un ID de usuario';
-      return;
-    }
-
-    const usuarioId = parseInt(this.criterioBusqueda);
-    if (isNaN(usuarioId) || usuarioId <= 0) {
-      this.errorBusqueda = 'ID de usuario inválido';
+      this.errorBusqueda = 'Ingresa un nombre para buscar';
       return;
     }
 
     this.buscando = true;
     this.errorBusqueda = '';
+    this.usuariosEncontrados = [];
     this.usuarioEncontrado = null;
 
-    this.canjearPromoService.consultarPromocionesUsuario(usuarioId).subscribe({
-      next: (response: ConsultarPromocionesResponse) => {
+    this.canjearPromoService.buscarUsuariosPorNombre(this.criterioBusqueda).subscribe({
+      next: (response: BuscarUsuariosResponse) => {
         this.buscando = false;
         
-        if (response.success) {
-          this.usuarioEncontrado = {
-            id: usuarioId,
-            nombre: response.nombre,
-            email: response.email,
-            promocionesPendientes: response.promocionesPendientes,
-            promocionesCanjeadas: response.promocionesCanjeadas,
-            promocionActual: response.promocionActual
-          };
+        if (response.success && response.usuarios) {
+          this.usuariosEncontrados = response.usuarios;
+          
+          if (response.usuarios.length === 1) {
+            this.usuarioEncontrado = response.usuarios[0];
+          }
         } else {
-          this.errorBusqueda = response.message || 'Usuario no encontrado';
+          this.errorBusqueda = response.message || 'No se encontraron usuarios';
         }
       },
       error: (error) => {
         this.buscando = false;
-        this.errorBusqueda = 'Error de conexión al buscar usuario';
-        console.error('Error buscando usuario:', error);
+        this.errorBusqueda = 'Error de conexión al buscar usuarios';
+        console.error('Error buscando usuarios:', error);
       }
     });
+  }
+
+  seleccionarUsuario(usuario: UsuarioFidelidad) {
+    this.usuarioEncontrado = usuario;
+    this.cantidadCanjear = 1;
+    this.mensajeExito = '';
+    this.errorCanje = '';
   }
 
   canjearPromocion() {
@@ -99,15 +96,14 @@ export class CanjearPromoComponent implements OnInit {
         if (response.success) {
           this.mensajeExito = response.message;
           
-          // Actualizar datos del usuario
-          this.usuarioEncontrado.promocionesPendientes = response.promocionesRestantes;
-          this.usuarioEncontrado.promocionesCanjeadas = 
-            (this.usuarioEncontrado.promocionesCanjeadas || 0) + this.cantidadCanjear;
+          if (this.usuarioEncontrado) {
+            this.usuarioEncontrado.promocionesPendientes = response.promocionesRestantes;
+            this.usuarioEncontrado.promocionesCanjeadas = 
+              (this.usuarioEncontrado.promocionesCanjeadas || 0) + this.cantidadCanjear;
+          }
           
-          // Resetear cantidad
           this.cantidadCanjear = 1;
           
-          // Auto-ocultar mensaje después de 5 segundos
           setTimeout(() => {
             this.mensajeExito = '';
           }, 5000);
@@ -125,6 +121,7 @@ export class CanjearPromoComponent implements OnInit {
 
   limpiarBusqueda() {
     this.criterioBusqueda = '';
+    this.usuariosEncontrados = [];
     this.usuarioEncontrado = null;
     this.errorBusqueda = '';
     this.mensajeExito = '';
@@ -132,7 +129,7 @@ export class CanjearPromoComponent implements OnInit {
   }
 
   get puedeCanjear(): boolean {
-    return this.usuarioEncontrado && 
+    return this.usuarioEncontrado !== null && 
            this.usuarioEncontrado.promocionesPendientes >= this.cantidadCanjear &&
            this.cantidadCanjear > 0;
   }
