@@ -115,4 +115,13 @@ export class AuthService {
       return null;
     }
   }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'admin';
+  }
+
+  isTrabajador(): boolean {
+    const role = this.getUserRole();
+    return role === 'trabajador' || role === 'admin';
+  }
 }

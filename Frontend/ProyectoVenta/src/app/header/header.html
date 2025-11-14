@@ -120,6 +120,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- En la navegación principal, modificar: -->
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link text-white fs-5" routerLink="/inicio" routerLinkActive="active"
@@ -131,11 +132,50 @@
               >Menú</a
             >
           </li>
+
+          <!-- Opciones para CLIENTES -->
+          @if (authService.isLoggedIn() && !authService.isTrabajador()) {
           <li class="nav-item">
             <a class="nav-link text-white fs-5" routerLink="/mis-pedidos" routerLinkActive="active">
               Mis Pedidos
             </a>
           </li>
+          }
+
+          <!-- Opciones para TRABAJADORES y ADMIN -->
+          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/panel-control"
+              routerLinkActive="active"
+            >
+              🎛️ Panel de Control
+            </a>
+          </li>
+          }
+
+          <!-- Opciones solo para ADMIN -->
+          @if (authService.isLoggedIn() && authService.isAdmin()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/crear-producto"
+              routerLinkActive="active"
+            >
+              🍽️ Crear Producto
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/crear-trabajador"
+              routerLinkActive="active"
+            >
+              👥 Crear Trabajador
+            </a>
+          </li>
+          }
         </ul>
 
         <div class="navbar-nav align-items-center">
@@ -150,9 +190,32 @@
               <span class="me-2">👤</span>
               Mi Cuenta
             </a>
+            <!-- En el dropdown de Mi Cuenta, modificar: -->
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" routerLink="/perfil">Mi Perfil</a></li>
+
+              <!-- Solo para clientes -->
+              @if (!authService.isTrabajador()) {
               <li><a class="dropdown-item" routerLink="/fidelidad">Mi Progreso</a></li>
+              }
+
+              <!-- Solo para admin y trabajadores -->
+              @if (authService.isTrabajador()) {
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" routerLink="/panel-control">🎛️ Panel de Control</a></li>
+              }
+
+              <!-- Solo para admin -->
+              @if (authService.isAdmin()) {
+              <li>
+                <a class="dropdown-item" routerLink="/crear-trabajador"
+                  >👥 Gestionar Trabajadores</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/crear-producto">🍽️ Gestionar Productos</a>
+              </li>
+              }
               <li><hr class="dropdown-divider" /></li>
               <li><a class="dropdown-item text-danger" (click)="logout()">Cerrar Sesión</a></li>
             </ul>

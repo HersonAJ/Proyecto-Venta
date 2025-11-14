@@ -8,6 +8,7 @@ import { MenuComponent } from './menu-component/menu-component';
 import { PersonalizarPedidoComponent } from './personalizar-pedido-component/personalizar-pedido-component';
 import { CarritoComponent } from './carrito-component/carrito-component';
 import { MisPedidosComponent } from './mis-pedidos-component/mis-pedidos-component';
+import { CrearTrabajadorComponent } from './crear-trabajador-component/crear-trabajador-component';
 
 export const routes: Routes = [
     { path: 'inicio', component: Inicio},
@@ -19,4 +20,5 @@ export const routes: Routes = [
     { path: 'personalizar/:id', component: PersonalizarPedidoComponent},
     { path: 'carrito', component: CarritoComponent},
     { path: 'mis-pedidos', component: MisPedidosComponent},
+    { path: 'crear-trabajador', component: CrearTrabajadorComponent},
 ];
