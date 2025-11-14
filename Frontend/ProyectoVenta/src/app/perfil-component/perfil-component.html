@@ -66,6 +66,11 @@
                   <label class="fw-bold text-warning">Teléfono:</label>
                   <p class="text-light mb-0">{{ perfilData.telefono || 'No proporcionado' }}</p>
                 </div>
+
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-warning">Fecha de Registro:</label>
+                  <p class="text-light mb-0">{{ perfilData.fechaRegistro | date:'dd/MM/yyyy' }}</p>
+                </div>
               </div>
 
               <!-- Avatar y Fidelidad -->
@@ -116,32 +121,63 @@
                 <div class="fidelidad-info">
                   <h4 class="text-warning fw-bold mb-3">🏆 Mi Progreso</h4>
                   
-                  <div class="stats-item mb-2">
-                    <span class="opacity-90">Hot Dogs Comprados:</span>
-                    <strong class="text-warning float-end">{{ perfilData.fidelidad.hotdogsComprados }}</strong>
+                  <div class="stats-grid mb-3">
+                    <div class="stat-item text-center p-2 bg-dark bg-opacity-50 rounded">
+                      <div class="stat-number text-warning fw-bold fs-5">{{ perfilData.fidelidad.hotdogsComprados }}</div>
+                      <small class="opacity-90">Total Comprados</small>
+                    </div>
+                    <div class="stat-item text-center p-2 bg-dark bg-opacity-50 rounded">
+                      <div class="stat-number text-warning fw-bold fs-5">{{ perfilData.fidelidad.promocionActual }}/7</div>
+                      <small class="opacity-90">Progreso Actual</small>
+                    </div>
+                    <div class="stat-item text-center p-2 bg-dark bg-opacity-50 rounded">
+                      <div class="stat-number text-warning fw-bold fs-5">{{ perfilData.fidelidad.promocionesPendientes }}</div>
+                      <small class="opacity-90">Promos Listas</small>
+                    </div>
                   </div>
 
-                  <div class="stats-item mb-2">
-                    <span class="opacity-90">Puntos Acumulados:</span>
-                    <strong class="text-warning float-end">{{ perfilData.fidelidad.puntosAcumulados }}</strong>
+                  <!-- Barra de Progreso -->
+                  <div class="progress-container mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                      <small class="opacity-90">Progreso hacia tu próxima promoción</small>
+                      <small class="text-warning fw-bold">{{ perfilData.fidelidad.porcentajeCompletado }}%</small>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px; background: rgba(255, 193, 7, 0.2);">
+                      <div 
+                        class="progress-bar bg-warning progress-bar-striped progress-bar-animated" 
+                        [style.width]="perfilData.fidelidad.porcentajeCompletado + '%'"
+                      ></div>
+                    </div>
                   </div>
 
-                  <div class="stats-item mb-3">
-                    <span class="opacity-90">Progreso Promoción:</span>
-                    <strong class="text-warning float-end">
-                      {{ perfilData.fidelidad.promocionActual }}/{{ perfilData.fidelidad.metaPromocion }}
-                    </strong>
+                  <!-- Sección de Promociones Pendientes -->
+                  <div class="promociones-section mt-4">
+                    @if (perfilData.fidelidad.promocionesPendientes > 0) {
+                      <div class="promo-disponible bg-warning bg-opacity-20 border border-warning rounded-3 p-3 text-center">
+                        <div class="promo-icon mb-2">🎁</div>
+                        <h5 class="text-warning fw-bold mb-2">¡Promoción Disponible!</h5>
+                        <p class="text-light mb-2">
+                          Tienes <strong class="text-warning">{{ perfilData.fidelidad.promocionesPendientes }}</strong> 
+                          hot dog(s) gratis listo(s) para reclamar
+                        </p>
+                        <small class="opacity-90">
+                          Acércate al local y muestra este perfil al trabajador
+                        </small>
+                      </div>
+                    } @else {
+                      <div class="promo-pendiente bg-dark bg-opacity-50 border border-secondary rounded-3 p-3 text-center">
+                        <div class="promo-icon mb-2">⏳</div>
+                        <h5 class="text-light fw-bold mb-2">Sigue acumulando</h5>
+                        <p class="text-light mb-2">
+                          Necesitas <strong class="text-warning">{{ 7 - perfilData.fidelidad.promocionActual }}</strong> 
+                          hot dog(s) más para tu próxima promoción
+                        </p>
+                        <small class="opacity-90">
+                          ¡Cada compra te acerca a tu recompensa!
+                        </small>
+                      </div>
+                    }
                   </div>
-
-                  <div class="progress mb-2" style="height: 8px; background: rgba(255, 193, 7, 0.2);">
-                    <div 
-                      class="progress-bar bg-warning" 
-                      [style.width]="perfilData.fidelidad.porcentajeCompletado + '%'"
-                    ></div>
-                  </div>
-                  <small class="opacity-90 text-center d-block">
-                    {{ perfilData.fidelidad.porcentajeCompletado }}% completado
-                  </small>
                 </div>
               </div>
             </div>

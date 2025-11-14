@@ -5,6 +5,7 @@ public class FidelidadData {
     private Integer hotdogsComprados;
     private Integer puntosAcumulados;
     private Integer promocionActual;
+    private int promocionesPendientes;
     private Integer metaPromocion;
     private Integer porcentajeCompletado;
     private Integer totalPersonasAcumulando;
@@ -55,5 +56,13 @@ public class FidelidadData {
 
     public void setTotalPersonasAcumulando(Integer totalPersonasAcumulando) {
         this.totalPersonasAcumulando = totalPersonasAcumulando;
+    }
+
+    public int getPromocionesPendientes() {
+        return promocionesPendientes;
+    }
+
+    public void setPromocionesPendientes(int promocionesPendientes) {
+        this.promocionesPendientes = promocionesPendientes;
     }
 }

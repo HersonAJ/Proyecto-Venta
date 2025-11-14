@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PerfilService, PerfilCompleto } from '../servicios/perfil-service';
+import { PerfilService, PerfilCompleto, FidelidadData } from '../servicios/perfil-service';
 import { AuthService } from '../servicios/auth-service';
 
 interface AvatarOption {

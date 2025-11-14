@@ -58,7 +58,7 @@
             </div>
 
             <!-- Botón -->
-            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/fidelidad">
+            <button class="btn promo-btn-small btn-sm fw-bold" routerLink="/perfil">
               Ver Progreso
             </button>
           </div>
@@ -205,11 +205,6 @@
             <!-- En el dropdown de Mi Cuenta, modificar: -->
             <ul class="dropdown-menu dropdown-menu-dark">
               <li><a class="dropdown-item" routerLink="/perfil">Mi Perfil</a></li>
-
-              <!-- Solo para clientes -->
-              @if (!authService.isTrabajador()) {
-              <li><a class="dropdown-item" routerLink="/fidelidad">Mi Progreso</a></li>
-              }
 
               <!-- Solo para admin y trabajadores -->
               @if (authService.isTrabajador()) {

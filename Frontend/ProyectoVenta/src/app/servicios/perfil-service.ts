@@ -1,8 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHandler, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RestConstants } from '../rest-constants';
 import { AuthService } from './auth-service';
+
+export interface FidelidadData {
+  hotdogsComprados: number;
+  puntosAcumulados: number;
+  promocionActual: number;
+  promocionesPendientes: number; 
+  metaPromocion: number;
+  porcentajeCompletado: number;
+  totalPersonasAcumulando: number;
+}
 
 export interface PerfilCompleto {
   id: number;
@@ -12,14 +22,7 @@ export interface PerfilCompleto {
   avatarId: number;
   rol: string;
   fechaRegistro: string;
-  fidelidad: {
-    hotdogsComprados: number;
-    puntosAcumulados: number;
-    promocionActual: number;
-    metaPromocion: number;
-    porcentajeCompletado: number;
-    totalPersonasAcumulando: number;
-  }
+  fidelidad: FidelidadData; 
 }
 
 export interface ActualizarAvatarRequest {

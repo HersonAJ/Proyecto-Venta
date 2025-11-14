@@ -22,15 +22,16 @@ public class PerfilDB {
     public PerfilCompletoResponse obtenerPerfilCompleto(String email) {
         // Query para obtener datos del usuario + fidelidad
         String sql = """
-        SELECT u.id, u.nombre, u.email, u.telefono, u.avatar_id, u.rol, u.fecha_registro,
-               COALESCE(f.hotdogs_comprados, 0) as hotdogs_comprados,
-               COALESCE(f.puntos_acumulados, 0) as puntos_acumulados,
-               COALESCE(f.promocion_actual, 0) as promocion_actual,
-               (SELECT COUNT(*) FROM fidelidad WHERE hotdogs_comprados > 0) as total_personas_acumulando
-        FROM usuarios u
-        LEFT JOIN fidelidad f ON u.id = f.usuario_id
-        WHERE u.email = ? AND u.activo = true
-        """;
+    SELECT u.id, u.nombre, u.email, u.telefono, u.avatar_id, u.rol, u.fecha_registro,
+           COALESCE(f.hotdogs_comprados, 0) as hotdogs_comprados,
+           COALESCE(f.puntos_acumulados, 0) as puntos_acumulados,
+           COALESCE(f.promocion_actual, 0) as promocion_actual,
+           COALESCE(f.promociones_pendientes, 0) as promociones_pendientes, -- NUEVO CAMPO
+           (SELECT COUNT(*) FROM fidelidad WHERE hotdogs_comprados > 0) as total_personas_acumulando
+    FROM usuarios u
+    LEFT JOIN fidelidad f ON u.id = f.usuario_id
+    WHERE u.email = ? AND u.activo = true
+    """;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -54,6 +55,7 @@ public class PerfilDB {
                 fidelidad.setHotdogsComprados(rs.getInt("hotdogs_comprados"));
                 fidelidad.setPuntosAcumulados(rs.getInt("puntos_acumulados"));
                 fidelidad.setPromocionActual(rs.getInt("promocion_actual"));
+                fidelidad.setPromocionesPendientes(rs.getInt("promociones_pendientes"));
                 fidelidad.setMetaPromocion(7); // Meta fija de 7 hotdogs
                 fidelidad.setPorcentajeCompletado((fidelidad.getPromocionActual() * 100) / 7);
                 fidelidad.setTotalPersonasAcumulando(rs.getInt("total_personas_acumulando"));
