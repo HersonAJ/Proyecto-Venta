@@ -11,6 +11,7 @@ import { MisPedidosComponent } from './mis-pedidos-component/mis-pedidos-compone
 import { CrearTrabajadorComponent } from './crear-trabajador-component/crear-trabajador-component';
 import { PedidosPendientesComponent } from './pedidos-pendientes-component/pedidos-pendientes-component';
 import { CanjearPromoComponent } from './canjear-promo-component/canjear-promo-component';
+import { VentasManualesComponent } from './ventas-manuales-component/ventas-manuales-component';
 
 export const routes: Routes = [
     { path: 'inicio', component: Inicio},
@@ -25,4 +26,5 @@ export const routes: Routes = [
     { path: 'crear-trabajador', component: CrearTrabajadorComponent},
     { path: 'pedidos-pendientes', component: PedidosPendientesComponent},
     { path: 'canjear-promo', component: CanjearPromoComponent},
+    { path: 'venta-manual', component: VentasManualesComponent},
 ];

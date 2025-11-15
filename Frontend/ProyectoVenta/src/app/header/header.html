@@ -154,6 +154,18 @@
             </a>
           </li>
           }
+          
+          @if (authService.isLoggedIn() && authService.isTrabajador()) {
+          <li class="nav-item">
+            <a
+              class="nav-link text-white fs-5"
+              routerLink="/venta-manual"
+              routerLinkActive="active"
+            >
+            Venta Manual
+            </a>
+          </li>
+          }          
 
           @if (authService.isLoggedIn() && authService.isTrabajador()) {
           <li class="nav-item">

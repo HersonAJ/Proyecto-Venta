@@ -56,6 +56,10 @@ export class MisPedidosComponent implements OnInit, OnDestroy {
     });
   }
 
+  getNumeroPedido(index: number): number {
+    return index + 1;
+  }
+
   getEstadoTexto(estado: string): string {
     const estados: { [key: string]: string } = {
       'pendiente': '🕒 Pendiente',

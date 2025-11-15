@@ -68,7 +68,7 @@
                 <div class="pedido-header mb-3">
                   <div class="row align-items-center">
                     <div class="col-md-8">
-                      <h4 class="text-warning fw-bold mb-1">Pedido #{{ pedido.id }}</h4>
+                      <h4 class="text-warning fw-bold mb-1">Pedido #{{ getNumeroPedido($index) }}</h4>
                       <div class="d-flex flex-wrap gap-3 align-items-center">
                         <small class="text-white opacity-90">
                           📅 {{ formatearFecha(pedido.fechaPedido) }}
@@ -161,7 +161,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body text-white">
-        <p class="mb-3">¿Confirmas que el pedido <strong class="text-warning">#{{ pedidoSeleccionado }}</strong> ha sido entregado al cliente y recibido el pago?</p>
+        <p class="mb-3">¿Confirmas que este pedido ha sido entregado al cliente y recibido el pago?</p>
         <div class="alert alert-info border border-info">
           <small>
             <strong>📝 Nota:</strong> Al marcar como entregado, el sistema actualizará el progreso de fidelidad del cliente.

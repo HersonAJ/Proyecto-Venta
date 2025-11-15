@@ -27,7 +27,6 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Verificar que el usuario sea trabajador o admin
     if (!this.authService.isTrabajador()) {
       this.router.navigate(['/inicio']);
       return;
@@ -64,16 +63,14 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
     this.pedidosPendientesService.marcarPedidoComoEntregado(this.pedidoSeleccionado).subscribe({
       next: (response) => {
         if (response.success) {
-          this.mensajeExito = `Pedido #${this.pedidoSeleccionado} marcado como entregado`;
+          this.mensajeExito = `Pedido marcado como entregado exitosamente`;
           
-          // Cerrar modal
           const modalElement = document.getElementById('confirmarEntregaModal');
           if (modalElement) {
             const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
             modal.hide();
           }
           
-          // Recargar la lista después de 1 segundo
           setTimeout(() => {
             this.cargarPedidosPendientes();
             this.pedidoSeleccionado = null;
@@ -87,6 +84,10 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
         console.error('Error marcando pedido como entregado:', error);
       }
     });
+  }
+
+  getNumeroPedido(index: number): number {
+    return index + 1;
   }
 
   getProductosPorTipo(tipo: string, detalles: any[]): any[] {
@@ -139,10 +140,9 @@ export class PedidosPendientesComponent implements OnInit, OnDestroy {
     }
   }
 
-    confirmarEntrega(pedidoId: number) {
+  confirmarEntrega(pedidoId: number) {
     this.pedidoSeleccionado = pedidoId;
     
-    // Mostrar modal de confirmación
     const modalElement = document.getElementById('confirmarEntregaModal');
     if (modalElement) {
       const modal = new (window as any).bootstrap.Modal(modalElement);
