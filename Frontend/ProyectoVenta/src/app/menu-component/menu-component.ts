@@ -58,4 +58,16 @@ export class MenuComponent implements OnInit {
   getTiposUnicos(): string[] {
     return [...new Set(this.productos.map(producto => producto.tipo))];
   }
+
+  onImageError(event: any) {
+    // Si la imagen no existe, mostrar una imagen por defecto
+    event.target.src = '/assets/images/productos/default-product.webp';
+  }
+
+  getProductImageUrl(imagenUrl: string | null | undefined): string {
+    if (!imagenUrl) {
+      return '/assets/images/productos/default-product.webp';
+    }
+    return `/assets/images/productos/${imagenUrl}`;
+  }
 }

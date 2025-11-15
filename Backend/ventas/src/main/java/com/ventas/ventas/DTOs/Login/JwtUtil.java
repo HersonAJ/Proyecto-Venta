@@ -19,7 +19,11 @@ public class JwtUtil {
     private long expirationMs;
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        String secureKey = secretKey;
+        if (secureKey.length() < 32) {
+            secureKey = String.format("%-32s", secureKey).replace(' ', '0');
+        }
+        return Keys.hmacShaKeyFor(secureKey.getBytes());
     }
 
     public String generateToken(String email, String role, String nombre, Integer userId) {

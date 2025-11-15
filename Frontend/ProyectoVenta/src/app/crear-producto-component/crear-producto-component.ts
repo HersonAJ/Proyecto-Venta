@@ -13,6 +13,15 @@ import { AuthService } from '../servicios/auth-service';
 })
 export class CrearProductoComponent {
 
+    imagenesDisponibles: string[] = [
+    'chevere.webp',
+    'torta.webp',
+    'torta-jamon.webp',
+    'torta-mixta.webp',
+    'bebida-coca-cola.webp',
+    'papas-fritas.webp'
+  ];
+
   producto: CrearProductoRequest = {
     nombre: '',
     tipo: 'Tortas',

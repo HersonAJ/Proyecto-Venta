@@ -47,22 +47,15 @@
           <div
             class="producto-card bg-dark border border-secondary rounded-2 h-100 d-flex flex-column"
           >
-            <!-- Imagen  -->
-            <div class="producto-imagen-container">
-              @if (producto.imagenUrl) {
-              <img
-                [src]="producto.imagenUrl"
-                [alt]="producto.nombre"
-                class="producto-image rounded-top"
-              />
-              } @else {
-              <div
-                class="producto-imagen-placeholder bg-secondary rounded-top d-flex align-items-center justify-content-center"
-              >
-                <span class="text-white opacity-75 small">🖼️</span>
-              </div>
-              }
-            </div>
+<!-- Imagen del Producto -->
+<div class="producto-imagen-container">
+  <img
+    [src]="getProductImageUrl(producto.imagenUrl)"
+    [alt]="producto.nombre"
+    class="producto-image rounded-top"
+    (error)="onImageError($event)"
+  />
+</div>
 
             <!-- Contenido-->
             <div class="producto-content p-2 flex-grow-1 d-flex flex-column">
@@ -95,8 +88,7 @@
       </div>
       }
     </div>
-    } }
-    @if (!loading && !errorMessage && productos.length === 0) {
+    } } @if (!loading && !errorMessage && productos.length === 0) {
     <div class="text-center py-4">
       <div class="alert alert-warning py-2">
         <h6 class="mb-2">📭 Menú Vacío</h6>

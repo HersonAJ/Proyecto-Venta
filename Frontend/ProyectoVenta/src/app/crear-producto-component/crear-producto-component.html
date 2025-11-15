@@ -121,19 +121,35 @@
                   />
                 </div>
 
-                <!-- Imagen URL -->
+                <!-- Selector de Imagen -->
                 <div class="mb-3">
                   <label for="imagenUrl" class="form-label text-warning fw-bold"
-                    >🖼️ URL de Imagen (opcional)</label
+                    >🖼️ Seleccionar Imagen</label
                   >
-                  <input
-                    type="text"
+                  <select
                     class="form-control bg-dark text-white border-warning"
                     id="imagenUrl"
                     name="imagenUrl"
                     [(ngModel)]="producto.imagenUrl"
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                  />
+                  >
+                    <option value="">-- Selecciona una imagen --</option>
+                    <option *ngFor="let imagen of imagenesDisponibles" [value]="imagen">
+                      {{ imagen }}
+                    </option>
+                  </select>
+
+                  <!-- Previsualización -->
+                  @if (producto.imagenUrl) {
+                  <div class="mt-2">
+                    <img
+                      [src]="'/assets/images/productos/' + producto.imagenUrl"
+                      [alt]="producto.imagenUrl"
+                      class="img-thumbnail border-warning"
+                      style="max-width: 150px; max-height: 150px"
+                    />
+                    <small class="text-muted d-block mt-1">Vista previa</small>
+                  </div>
+                  }
                 </div>
 
                 <!-- Descripción -->

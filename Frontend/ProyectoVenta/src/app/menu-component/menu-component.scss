@@ -9,7 +9,7 @@
       border-color: #ffc107 !important;
     }
   }
-
+/*
   .producto-imagen-container {
     height: 120px; 
     overflow: hidden;
@@ -24,7 +24,7 @@
       height: 120px; 
       width: 100%;
     }
-  }
+  }*/
 
   .producto-descripcion {
     min-height: 30px; 
@@ -39,4 +39,27 @@
   .categoria-header {
     border-bottom: 1px solid #ffc107; 
   }
+}
+.producto-imagen-container {
+  width: 100%;
+  height: 200px; 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.producto-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center;
+}
+
+.producto-card.hotdog .producto-image {
+  object-position: top; 
+}
+
+.producto-card.torta .producto-image {
+  object-position: center; 
 }
