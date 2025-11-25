@@ -13,7 +13,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "http:://localHost:4200")
 public class MenuController {
 
     private final MenuDB menuDB;

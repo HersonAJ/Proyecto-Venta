@@ -8,7 +8,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedidos")
-@CrossOrigin(origins = "http://localhost:4200")
 public class CrearPedidoController {
 
     private final CrearPedidoDB crearPedidoDB;

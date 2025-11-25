@@ -9,7 +9,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/trabajador")
-@CrossOrigin(origins = "http://localhost:4200")
 public class PedidosPendientesController {
 
     private final PedidosPendientesDB pedidosPendientesDB;

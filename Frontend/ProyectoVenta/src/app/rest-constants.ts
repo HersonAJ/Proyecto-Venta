@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import { environment } from "../environments/environment";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class RestConstants {
-    public readonly API_URL = environment.API_URL;
-    
-    public getApiURL(): string {
-      return this.API_URL;
-    }
+  // URL relativa - será manejada por nginx
+  public readonly API_URL = '/api/';
+
+  public getApiURL(): string {
+    return this.API_URL;
+  }
 }

@@ -43,8 +43,8 @@ export class FooterComponent implements AfterViewInit {
       adContainer.innerHTML = `
         <div class="mock-ad">
           <div class="mock-ad-content">
-            <span>🤑 Zona de Anuncios (AdSense)</span>
-            <small>En producción se mostrarán anuncios reales</small>
+            <span> </span>
+            <small> </small>
           </div>
         </div>
       `;

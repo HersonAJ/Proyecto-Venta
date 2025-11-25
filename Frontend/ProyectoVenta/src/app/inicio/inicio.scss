@@ -1,293 +1,31 @@
-/* ==== PROMO SECTION V2 ==== */
-.promo-section {
-  background: linear-gradient(135deg, #1a1a1a 0%, #242424 100%);
-  border-bottom: 2px solid #ffc107;
-  position: relative;
-  padding: 1.5rem 0;
-  overflow: hidden;
-
-  /* Sutil brillo lateral */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background: linear-gradient(180deg, #ffc107, transparent);
-    animation: side-glow 2s ease-in-out infinite alternate;
-  }
-
-  .container {
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Emoji animado */
-  .promo-emoji {
-    animation: bounce 1.6s infinite ease-in-out;
-    font-size: 1.8rem;
-    filter: drop-shadow(0 0 3px #ffc107);
-  }
-
-  /* Título principal */
-  .promo-title {
-    font-size: 1.3rem;
-    text-shadow: 0 0 6px rgba(255, 193, 7, 0.5);
-    animation: subtle-glow 2s ease-in-out infinite alternate;
-  }
-
-  /* Texto descriptivo */
-  .promo-description {
-    font-size: 0.95rem;
-    line-height: 1.4;
-    color: #f8f9fa;
-    animation: fadeInText 1.5s ease forwards;
-    white-space: normal; /* 🔧 permite el salto de línea en móvil */
-    border: none; /* quitamos el borde de la animación anterior */
-    overflow: visible;
-  }
-
-  /* Contador */
-  .promo-counter {
-    margin-top: 0.5rem;
-    small {
-      color: #ffc107;
-      font-weight: 600;
-      animation: pulseText 2s infinite;
-    }
-  }
-
-  /* Botón promocional */
-  .promo-btn {
-    background: #ffc107;
-    color: #212529;
-    font-weight: 700;
-    border: none;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.4);
-      transform: skewX(-20deg);
-      transition: left 0.4s;
-    }
-
-    &:hover::after {
-      left: 200%;
-    }
-
-    &:hover {
-      box-shadow: 0 0 12px rgba(255, 193, 7, 0.5);
-      transform: translateY(-2px);
-    }
-  }
-
-  /* Confeti minimalista */
-  .confetti {
-    position: absolute;
-    inset: 0;
-    background-image:
-      radial-gradient(circle, #ffc107 1.5px, transparent 1.5px),
-      radial-gradient(circle, #ffda47 1.5px, transparent 1.5px);
-    background-size: 12px 12px;
-    animation: confetti-fall 12s linear infinite;
-    opacity: 0.2;
-    pointer-events: none;
-  }
+/* Efecto suave al aparecer */
+.scroll-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
 }
 
-/* ==== ANIMACIONES ==== */
-@keyframes side-glow {
-  from { opacity: 0.4; }
-  to { opacity: 1; }
+.scroll-up.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+
+/* Lista más elegante */
+.rules-list li {
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  opacity: 0.9;
 }
 
-@keyframes subtle-glow {
-  from { text-shadow: 0 0 6px rgba(255, 193, 7, 0.4); }
-  to { text-shadow: 0 0 10px rgba(255, 193, 7, 0.8); }
-}
+.text-gradient-gold {
+  background: linear-gradient(45deg, #ffc107, #ffffff);
 
-@keyframes fadeInText {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+  /* Compatibilidad */
+  background-clip: text;
+  -webkit-background-clip: text;
 
-@keyframes pulseText {
-  0%, 100% { color: #ffc107; }
-  50% { color: #ffde5c; }
-}
-
-@keyframes confetti-fall {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 0 600px, 0 700px; }
-}
-
-/* ==== RESPONSIVE ==== */
-@media (max-width: 768px) {
-  .promo-section {
-    text-align: center;
-    padding: 2rem 1rem;
-
-    .promo-title {
-      font-size: 1.2rem;
-    }
-
-    .promo-description {
-      font-size: 1rem;
-      max-width: 100%;
-      white-space: normal; /* ✅ se asegura que no se corte */
-    }
-
-    .promo-btn {
-      margin-top: 1rem;
-      width: 100%;
-    }
-
-    .progress-container {
-      margin-top: 1rem;
-    }
-  }
-}
-
-
-/* ==== PROGRESS BAR ANIMADO ==== */
-.progress-bar-animated {
-  position: relative;
-  overflow: hidden;
-  border-radius: 3px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.6),
-      transparent
-    );
-    animation: shimmer 2s infinite;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* Efecto para el número del contador */
-.counter-highlight {
-  color: #ffc107;
-  font-weight: bold;
-  animation: pulseText 2s infinite;
-  text-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
-}
-
-/* Asegurar que el progress container tenga buen espaciado en móvil */
-.progress-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  @media (max-width: 768px) {
-    margin: 1rem 0;
-  }
-}
-
-/* Mejorar la alineación en móvil */
-@media (max-width: 768px) {
-  .promo-section .d-flex.align-items-center {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem !important;
-  }
-  
-  .promo-content {
-    width: 100%;
-  }
-  
-  .col-md-4.text-md-end .d-flex {
-    justify-content: center !important;
-  }
-}
-
-//de aqui en adelante no es promo
-.hero-section {
-  background: linear-gradient(135deg, #0f0f0f 0%, #2d2d2d 100%);
-}
-
-.products-section {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-}
-
-.features-section {
-  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-}
-
-.product-card {
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(255, 193, 7, 0.2);
-  }
-}
-
-.product-item {
-  transition: all 0.2s ease;
-  
-  &:hover {
-    border-color: #ffc107 !important;
-    background-color: rgba(255, 193, 7, 0.1) !important;
-  }
-}
-
-.floating-badge {
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(2deg); }
-}
-
-.cta-section {
-  background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%) !important;
-}
-
-/* Mejoras responsive */
-@media (max-width: 768px) {
-  .promo-section .row {
-    text-align: center;
-  }
-  
-  .hero-section {
-    text-align: center;
-    padding: 2rem 0;
-  }
-  
-  .display-5 {
-    font-size: 2rem;
-  }
+  color: transparent;
 }
