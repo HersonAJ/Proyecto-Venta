@@ -2,7 +2,7 @@
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /workspace
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Dmaven.resources.skip=true
 
 # Etapa 2: runtime
 FROM eclipse-temurin:17-jdk
