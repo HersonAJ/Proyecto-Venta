@@ -74,7 +74,8 @@ public class SecurityConfig {
                 "http://localhost:80",
                 "http://frontend",
                 "http://frontend:80",
-                "tacontento.up.railway.app"
+                "https://tacontento.up.railway.app",
+                "http://tacontento.up.railway.app"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));
